@@ -1,0 +1,43 @@
+type Dispute @entity {
+  " Dispute ID "
+  id: ID!
+
+  " Current period "
+  period: Period!
+
+  " Creation timestamp as seconds "
+  created: BigInt!
+
+  " Block number in which the dispute was created "
+  createdAtBlock: BigInt!
+
+  " Transaction hash in which the dispute was created "
+  createdAtTransaction: Bytes!
+
+  " Timestamp as seconds of most recent action "
+  modified: BigInt!
+
+  " Block number at most recent action"
+  modifiedAtBlock: BigInt!
+
+  " Transaction hash at most recent action "
+  modifiedAtTransaction: Bytes!
+}
+
+" Dispute period "
+enum Period {
+  " Evidence can be submitted. This is also when drawing has to take place. "
+  EVIDENCE
+
+  " Jurors commit a hashed vote. This is skipped for courts without hidden votes. "
+  COMMIT
+
+  " Jurors reveal/cast their vote depending on whether the court has hidden votes or not. "
+  VOTE
+
+  " The dispute can be appealed. "
+  APPEAL
+
+  " Tokens are redistributed and the ruling is executed. "
+  EXECUTION
+}

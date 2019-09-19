@@ -1,0 +1,17 @@
+{
+  "name": "kleros-subgraph",
+  "license": "MIT",
+  "author": "Sebastián Galiano <sgaliano@gmail.com>",
+  "scripts": {
+    "build": "graph build",
+    "codegen": "graph codegen",
+    "create-local": "graph create --node http://localhost:8020/ sistemico/kleros",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ sistemico/kleros",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sistemico/kleros",
+    "remove-local": "graph remove --node http://localhost:8020/ sistemico/kleros"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.15.0",
+    "@graphprotocol/graph-ts": "0.15.0"
+  }
+}

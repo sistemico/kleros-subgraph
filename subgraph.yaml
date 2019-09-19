@@ -1,0 +1,39 @@
+description: Kleros is a blockchain dispute resolution platform
+repository: https://github.com/sistemico/kleros-subgraph
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Kleros
+    network: mainnet
+    source:
+      abi: KlerosLiquid
+      address: '0x988b3a538b618c7a603e1c11ab82cd16dbe28069'
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      file: ./src/mapping.ts
+      language: wasm/assemblyscript
+      entities:
+        - Dispute
+      abis:
+        - name: KlerosLiquid
+          file: ./abis/KlerosLiquid.json
+      eventHandlers:
+        - event: AppealDecision(indexed uint256,indexed address)
+          handler: handleAppealDecision
+        - event: AppealPossible(indexed uint256,indexed address)
+          handler: handleAppealPossible
+        - event: DisputeCreation(indexed uint256,indexed address)
+          handler: handleDisputeCreation
+        - event: Draw(indexed address,indexed uint256,uint256,uint256)
+          handler: handleDraw
+        - event: NewPeriod(indexed uint256,uint8)
+          handler: handleNewPeriod
+        - event: NewPhase(uint8)
+          handler: handleNewPhase
+        - event: StakeSet(indexed address,uint256,uint128,uint256)
+          handler: handleStakeSet
+        - event: TokenAndETHShift(indexed address,indexed uint256,int256,int256)
+          handler: handleTokenAndETHShift
