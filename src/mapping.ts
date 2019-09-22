@@ -1,3 +1,5 @@
+import { BigInt } from '@graphprotocol/graph-ts'
+
 import {
   NewPhase,
   NewPeriod,
@@ -7,11 +9,31 @@ import {
   DisputeCreation,
   AppealPossible,
   AppealDecision,
+  CreateSubcourtCall,
 } from '../generated/Kleros/KlerosLiquid'
 
-import { Dispute } from '../generated/schema'
+import { Court, Dispute, Kleros } from '../generated/schema'
 
 import { toPeriod } from './helpers'
+
+const KLEROS_SUMMARY_ID = '1'
+
+export function handlerCourtCreation(call: CreateSubcourtCall): void {
+  let court = new Court(generateCourtId())
+  court.parent = call.inputs._parent.toString()
+  court.hiddenVotes = call.inputs._hiddenVotes
+  court.minStake = call.inputs._minStake
+  court.alpha = call.inputs._alpha
+  court.feeForJuror = call.inputs._feeForJuror
+  court.jurorsForCourtJump = call.inputs._jurorsForCourtJump
+  court.timesPerPeriod = call.inputs._timesPerPeriod
+
+  court.created = call.block.timestamp
+  court.createdAtBlock = call.block.number
+  court.createdAtTransaction = call.transaction.hash
+
+  court.save()
+}
 
 export function handleNewPhase(event: NewPhase): void {
   // TODO
@@ -62,4 +84,24 @@ export function handleAppealPossible(event: AppealPossible): void {
 
 export function handleAppealDecision(event: AppealDecision): void {
   // TODO
+}
+
+function generateCourtId(): string {
+  let summary = getSummaryEntity()
+  summary.courtCount = summary.courtCount.plus(BigInt.fromI32(1))
+
+  summary.save()
+
+  return summary.courtCount.toString()
+}
+
+function getSummaryEntity(): Kleros {
+  let summary = Kleros.load(KLEROS_SUMMARY_ID)
+
+  if (summary == null) {
+    summary = new Kleros(KLEROS_SUMMARY_ID)
+    summary.courtCount = BigInt.fromI32(0)
+  }
+
+  return summary as Kleros
 }

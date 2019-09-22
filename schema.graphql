@@ -1,3 +1,53 @@
+#
+# Kleros
+#
+
+type Kleros @entity {
+  " Kleros platform version "
+  id: ID!
+
+  " Total numbers of registered courts "
+  courtCount: BigInt!
+}
+
+type Court @entity {
+  " Court index "
+  id: ID!
+
+  " Parent court "
+  parent: Court
+
+  " Whether to use commit and reveal or not "
+  hiddenVotes: Boolean!
+
+  " Minimum tokens needed to stake in the court "
+  minStake: BigInt!
+
+  " Basis point of tokens that are lost when incoherent "
+  alpha: BigInt!
+
+  " Arbitration fee paid per juror "
+  feeForJuror: BigInt!
+
+  " The appeal after the one that reaches this number of jurors will go to the parent court if any, otherwise, no more appeals are possible "
+  jurorsForCourtJump: BigInt!
+
+  " The time allotted to each dispute period "
+  timesPerPeriod: [BigInt!]!
+
+  " Creation timestamp as seconds "
+  created: BigInt!
+
+  " Block number in which the court was created "
+  createdAtBlock: BigInt!
+
+  " Transaction hash in which the court was created "
+  createdAtTransaction: Bytes!
+
+  " List of child courts "
+  children: [Court!] @derivedFrom(field: "parent")
+}
+
 type Dispute @entity {
   " Dispute ID "
   id: ID!
@@ -29,18 +79,18 @@ type Dispute @entity {
 
 " Dispute period "
 enum Period {
-  " Evidence can be submitted. This is also when drawing has to take place. "
+  " Evidence can be submitted. This is also when drawing has to take place "
   EVIDENCE
 
-  " Jurors commit a hashed vote. This is skipped for courts without hidden votes. "
+  " Jurors commit a hashed vote. This is skipped for courts without hidden votes "
   COMMIT
 
-  " Jurors reveal/cast their vote depending on whether the court has hidden votes or not. "
+  " Jurors reveal/cast their vote depending on whether the court has hidden votes or not "
   VOTE
 
-  " The dispute can be appealed. "
+  " The dispute can be appealed "
   APPEAL
 
-  " Tokens are redistributed and the ruling is executed. "
+  " Tokens are redistributed and the ruling is executed "
   EXECUTION
 }
