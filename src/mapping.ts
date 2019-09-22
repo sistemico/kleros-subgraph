@@ -43,10 +43,15 @@ export function handleTokenAndETHShift(event: TokenAndETHShift): void {
 export function handleDisputeCreation(event: DisputeCreation): void {
   let dispute = new Dispute(event.params._disputeID.toString())
   dispute.period = 'EVIDENCE'
+  dispute.owner = event.transaction.from
 
   dispute.created = event.block.timestamp
   dispute.createdAtBlock = event.block.number
   dispute.createdAtTransaction = event.transaction.hash
+
+  dispute.modified = dispute.created
+  dispute.modifiedAtBlock = dispute.createdAtBlock
+  dispute.modifiedAtTransaction = dispute.createdAtTransaction
 
   dispute.save()
 }

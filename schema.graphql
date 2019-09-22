@@ -5,6 +5,9 @@ type Dispute @entity {
   " Current period "
   period: Period!
 
+  " Address of the dispute's owner "
+  owner: Bytes!
+
   " Creation timestamp as seconds "
   created: BigInt!
 
