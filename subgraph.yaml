@@ -42,3 +42,22 @@ dataSources:
       callHandlers:
         - function: createSubcourt(uint96,bool,uint256,uint256,uint256,uint256,uint256[4],uint256)
           handler: handlerCourtCreation
+  - name: Pinakion
+    kind: ethereum/contract
+    network: mainnet
+    source:
+      abi: Pinakion
+      address: '0x93ed3fbe21207ec2e8f2d3c3de6e058cb73bc04d'
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      file: ./src/mapping/token.ts
+      language: wasm/assemblyscript
+      entities:
+        - Transfer
+      abis:
+        - name: Pinakion
+          file: ./abis/Pinakion.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handlePinakionTransfer

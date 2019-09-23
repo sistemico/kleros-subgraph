@@ -94,3 +94,29 @@ enum Period {
   " Tokens are redistributed and the ruling is executed "
   EXECUTION
 }
+
+#
+# Pinakion
+#
+
+type PinakionTransfer @entity {
+  id: ID!
+
+  " Quantity of tokens transferred "
+  amount: BigDecimal!
+
+  " Address of the source account "
+  from: Bytes!
+
+  " Address of the destination account "
+  to: Bytes!
+
+  " Block number "
+  block: BigInt!
+
+  " Event timestamp "
+  timestamp: BigInt!
+
+  " Transaction hash "
+  transaction: Bytes!
+}
