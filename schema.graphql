@@ -52,6 +52,12 @@ type Dispute @entity {
   " Dispute ID "
   id: ID!
 
+  " The subcourt the dispute is in "
+  court: Court!
+
+  " The number of choices jurors have when voting "
+  numberOfChoices: BigInt!
+
   " Current period "
   period: Period!
 

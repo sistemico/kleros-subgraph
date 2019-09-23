@@ -1,4 +1,5 @@
 import {
+  KlerosLiquid,
   AppealDecision,
   AppealPossible,
   DisputeCreation,
@@ -8,8 +9,12 @@ import {
 import { Dispute } from '../../generated/schema'
 
 export function handleDisputeCreation(event: DisputeCreation): void {
+  let disputeData = KlerosLiquid.bind(event.address).disputes(event.params._disputeID)
+
   let dispute = new Dispute(event.params._disputeID.toString())
-  dispute.period = 'EVIDENCE'
+  dispute.court = disputeData.value0.toString()
+  dispute.numberOfChoices = disputeData.value2
+  dispute.period = toPeriod(disputeData.value3)
   dispute.owner = event.transaction.from
 
   dispute.created = event.block.timestamp
