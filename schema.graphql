@@ -21,16 +21,16 @@ type Court @entity {
   hiddenVotes: Boolean!
 
   " Minimum tokens needed to stake in the court "
-  minStake: BigInt!
+  minStake: BigDecimal!
 
   " Basis point of tokens that are lost when incoherent "
   alpha: BigInt!
 
   " Arbitration fee paid per juror "
-  feeForJuror: BigInt!
+  feeForJuror: BigDecimal!
 
   " The appeal after the one that reaches this number of jurors will go to the parent court if any, otherwise, no more appeals are possible "
-  jurorsForCourtJump: BigInt!
+  jurorsForCourtJump: BigDecimal!
 
   " The time allotted to each dispute period "
   timesPerPeriod: [BigInt!]!

@@ -4,15 +4,16 @@ import { CreateSubcourtCall } from '../../generated/Kleros/KlerosLiquid'
 import { Court } from '../../generated/schema'
 
 import { getSummaryEntity } from './core'
+import { toDecimal } from './token'
 
 export function handlerCourtCreation(call: CreateSubcourtCall): void {
   let court = new Court(generateCourtId())
   court.parent = call.inputs._parent.toString()
   court.hiddenVotes = call.inputs._hiddenVotes
-  court.minStake = call.inputs._minStake
+  court.minStake = toDecimal(call.inputs._minStake)
   court.alpha = call.inputs._alpha
-  court.feeForJuror = call.inputs._feeForJuror
-  court.jurorsForCourtJump = call.inputs._jurorsForCourtJump
+  court.feeForJuror = toDecimal(call.inputs._feeForJuror)
+  court.jurorsForCourtJump = toDecimal(call.inputs._jurorsForCourtJump)
   court.timesPerPeriod = call.inputs._timesPerPeriod
 
   court.created = call.block.timestamp
