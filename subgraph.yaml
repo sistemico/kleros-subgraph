@@ -13,10 +13,12 @@ dataSources:
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.3
-      file: ./src/mapping.ts
+      file: ./src/mapping/index.ts
       language: wasm/assemblyscript
       entities:
+        - Court
         - Dispute
+        - Kleros
       abis:
         - name: KlerosLiquid
           file: ./abis/KlerosLiquid.json
