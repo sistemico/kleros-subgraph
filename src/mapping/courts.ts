@@ -3,7 +3,7 @@ import { BigInt } from '@graphprotocol/graph-ts'
 import { CreateSubcourtCall } from '../../generated/Kleros/KlerosLiquid'
 import { Court } from '../../generated/schema'
 
-import { getSummaryEntity } from './summary'
+import { getSummaryEntity } from './core'
 
 export function handlerCourtCreation(call: CreateSubcourtCall): void {
   let court = new Court(generateCourtId())
