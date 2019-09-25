@@ -14,8 +14,20 @@ type Court @entity {
   " Court index "
   id: ID!
 
+  " Court name "
+  name: String
+
+  " Court description "
+  description: String
+
+  " Summary "
+  summary: String
+
   " Parent court "
   parent: Court
+
+  " Court policy "
+  policy: String
 
   " Whether to use commit and reveal or not "
   hiddenVotes: Boolean!
@@ -32,20 +44,20 @@ type Court @entity {
   " The appeal after the one that reaches this number of jurors will go to the parent court if any, otherwise, no more appeals are possible "
   jurorsForCourtJump: BigDecimal!
 
-  " The time allotted to each dispute period "
-  timesPerPeriod: [BigInt!]!
-
   " Creation timestamp as seconds "
-  created: BigInt!
+  created: BigInt
 
   " Block number in which the court was created "
-  createdAtBlock: BigInt!
+  createdAtBlock: BigInt
 
   " Transaction hash in which the court was created "
-  createdAtTransaction: Bytes!
+  createdAtTransaction: Bytes
 
   " List of child courts "
   children: [Court!] @derivedFrom(field: "parent")
+
+  " List of disputes on this court "
+  disputes: [Dispute!] @derivedFrom(field: "court")
 }
 
 type Dispute @entity {

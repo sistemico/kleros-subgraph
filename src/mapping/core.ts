@@ -1,8 +1,14 @@
-import { BigInt } from '@graphprotocol/graph-ts'
+import { Address, BigInt } from '@graphprotocol/graph-ts'
+
+import { KlerosLiquid } from '../../generated/Kleros/KlerosLiquid'
 
 import { Kleros } from '../../generated/schema'
 
-const KLEROS_SUMMARY_ID = '1'
+import { KLEROS_LIQUID_ADDRESS, KLEROS_SUMMARY_ID } from '../constants'
+
+export function getKlerosContract(): KlerosLiquid {
+  return KlerosLiquid.bind(Address.fromString(KLEROS_LIQUID_ADDRESS))
+}
 
 export function getSummaryEntity(): Kleros {
   let summary = Kleros.load(KLEROS_SUMMARY_ID)

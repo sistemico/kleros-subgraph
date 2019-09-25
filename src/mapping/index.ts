@@ -1,5 +1,6 @@
 export {
-  handlerCourtCreation
+  handlerCourtCreation,
+  handlerPolicyUpdate,
 } from './courts'
 
 export {

@@ -1,5 +1,4 @@
 import {
-  KlerosLiquid,
   AppealDecision,
   AppealPossible,
   DisputeCreation,
@@ -8,24 +7,31 @@ import {
 
 import { Dispute } from '../../generated/schema'
 
+import { getKlerosContract } from './core'
+import { getOrCreateCourt } from './courts'
+
 export function handleDisputeCreation(event: DisputeCreation): void {
-  let disputeData = KlerosLiquid.bind(event.address).disputes(event.params._disputeID)
+  let disputeData = getKlerosContract().try_disputes(event.params._disputeID)
 
-  let dispute = new Dispute(event.params._disputeID.toString())
-  dispute.court = disputeData.value0.toString()
-  dispute.numberOfChoices = disputeData.value2
-  dispute.period = toPeriod(disputeData.value3)
-  dispute.owner = event.transaction.from
+  if (!disputeData.reverted) {
+    let court = getOrCreateCourt(disputeData.value.value0)
 
-  dispute.created = event.block.timestamp
-  dispute.createdAtBlock = event.block.number
-  dispute.createdAtTransaction = event.transaction.hash
+    let dispute = new Dispute(event.params._disputeID.toString())
+    dispute.court = court.id
+    dispute.numberOfChoices = disputeData.value.value2
+    dispute.period = toPeriod(disputeData.value.value3)
+    dispute.owner = event.transaction.from
 
-  dispute.modified = dispute.created
-  dispute.modifiedAtBlock = dispute.createdAtBlock
-  dispute.modifiedAtTransaction = dispute.createdAtTransaction
+    dispute.created = event.block.timestamp
+    dispute.createdAtBlock = event.block.number
+    dispute.createdAtTransaction = event.transaction.hash
 
-  dispute.save()
+    dispute.modified = dispute.created
+    dispute.modifiedAtBlock = dispute.createdAtBlock
+    dispute.modifiedAtTransaction = dispute.createdAtTransaction
+
+    dispute.save()
+  }
 }
 
 export function handleNewPeriod(event: NewPeriod): void {
