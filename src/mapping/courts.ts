@@ -1,33 +1,62 @@
 import { BigInt } from '@graphprotocol/graph-ts'
 
-import { CreateSubcourtCall } from '../../generated/Kleros/KlerosLiquid'
 import { Court } from '../../generated/schema'
 
-import { getSummaryEntity } from './core'
+import { getKlerosContract, getSummaryEntity } from './core'
+import { ONE } from './utils'
 import { toDecimal } from './token'
 
-export function handlerCourtCreation(call: CreateSubcourtCall): void {
-  let court = new Court(generateCourtId())
-  court.parent = call.inputs._parent.toString()
-  court.hiddenVotes = call.inputs._hiddenVotes
-  court.minStake = toDecimal(call.inputs._minStake)
-  court.alpha = call.inputs._alpha
-  court.feeForJuror = toDecimal(call.inputs._feeForJuror)
-  court.jurorsForCourtJump = toDecimal(call.inputs._jurorsForCourtJump)
-  court.timesPerPeriod = call.inputs._timesPerPeriod
+export function getOrRegisterCourt(courtId: BigInt): Court {
+  let court = Court.load(courtId.toString())
 
-  court.created = call.block.timestamp
-  court.createdAtBlock = call.block.number
-  court.createdAtTransaction = call.transaction.hash
+  if (court == null) {
+    let courtData = getKlerosContract().try_courts(courtId)
 
-  court.save()
+    // Register court if not exists
+    if (!courtData.reverted) {
+      court = new Court(courtId.toString())
+      court.name = getCourtName(courtId)
+      court.parent = courtData.value.value0.toString()
+      court.hiddenVotes = courtData.value.value1
+      court.minStake = toDecimal(courtData.value.value2)
+      court.alpha = courtData.value.value3
+      court.feeForJuror = toDecimal(courtData.value.value4)
+      court.jurorsForCourtJump = toDecimal(courtData.value.value5)
+
+      court.disputeCount = BigInt.fromI32(0)
+
+      // Register court in platform summary
+      let summary = getSummaryEntity()
+      summary.courtCount = summary.courtCount.plus(ONE)
+
+      // Persist all the entities
+      court.save()
+      summary.save()
+    }
+  }
+
+  return court as Court
 }
 
-function generateCourtId(): string {
-  let summary = getSummaryEntity()
-  summary.courtCount = summary.courtCount.plus(BigInt.fromI32(1))
-
-  summary.save()
-
-  return summary.courtCount.toString()
+function getCourtName(id: BigInt): string {
+  switch (id.toI32()) {
+    case 0:
+      return 'General Court'
+    case 1:
+      return 'Blockchain'
+    case 2:
+      return 'Non-Technical'
+    case 3:
+      return 'Exchange Token Listing'
+    case 4:
+      return 'Technical'
+    case 5:
+      return 'Marketing Services'
+    case 6:
+      return 'English Language'
+    case 7:
+      return 'Video Production'
+    default:
+      return 'Unknown'
+  }
 }

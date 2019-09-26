@@ -6,13 +6,19 @@ type Kleros @entity {
   " Kleros platform version "
   id: ID!
 
-  " Total numbers of registered courts "
+  " Total numbers of courts "
   courtCount: BigInt!
+
+  " Total numbers of disputes "
+  disputeCount: BigInt!
 }
 
 type Court @entity {
   " Court index "
   id: ID!
+
+  " Court name "
+  name: String!
 
   " Parent court "
   parent: Court
@@ -32,17 +38,8 @@ type Court @entity {
   " The appeal after the one that reaches this number of jurors will go to the parent court if any, otherwise, no more appeals are possible "
   jurorsForCourtJump: BigDecimal!
 
-  " The time allotted to each dispute period "
-  timesPerPeriod: [BigInt!]!
-
-  " Creation timestamp as seconds "
-  created: BigInt!
-
-  " Block number in which the court was created "
-  createdAtBlock: BigInt!
-
-  " Transaction hash in which the court was created "
-  createdAtTransaction: Bytes!
+  " Total numbers of disputes on this court "
+  disputeCount: BigInt!
 
   " List of child courts "
   children: [Court!] @derivedFrom(field: "parent")

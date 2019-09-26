@@ -1,5 +1,4 @@
 import {
-  KlerosLiquid,
   AppealDecision,
   AppealPossible,
   DisputeCreation,
@@ -8,24 +7,50 @@ import {
 
 import { Dispute } from '../../generated/schema'
 
+import { getKlerosContract, getSummaryEntity } from './core'
+import { getOrRegisterCourt } from './courts'
+import { ONE } from './utils'
+
 export function handleDisputeCreation(event: DisputeCreation): void {
-  let disputeData = KlerosLiquid.bind(event.address).disputes(event.params._disputeID)
+  let callResult = getKlerosContract().try_disputes(event.params._disputeID)
 
-  let dispute = new Dispute(event.params._disputeID.toString())
-  dispute.court = disputeData.value0.toString()
-  dispute.numberOfChoices = disputeData.value2
-  dispute.period = toPeriod(disputeData.value3)
-  dispute.owner = event.transaction.from
+  if (!callResult.reverted) {
+    let disputeData = callResult.value
 
-  dispute.created = event.block.timestamp
-  dispute.createdAtBlock = event.block.number
-  dispute.createdAtTransaction = event.transaction.hash
+    // Register a new dispute
+    let dispute = new Dispute(event.params._disputeID.toString())
+    dispute.numberOfChoices = disputeData.value2
+    dispute.period = toPeriod(disputeData.value3)
+    dispute.owner = event.transaction.from
 
-  dispute.modified = dispute.created
-  dispute.modifiedAtBlock = dispute.createdAtBlock
-  dispute.modifiedAtTransaction = dispute.createdAtTransaction
+    dispute.created = event.block.timestamp
+    dispute.createdAtBlock = event.block.number
+    dispute.createdAtTransaction = event.transaction.hash
 
-  dispute.save()
+    dispute.modified = dispute.created
+    dispute.modifiedAtBlock = dispute.createdAtBlock
+    dispute.modifiedAtTransaction = dispute.createdAtTransaction
+
+    // Associate dispute with a court
+    if (disputeData.value0 != null) {
+      let court = getOrRegisterCourt(disputeData.value0)
+
+      if (court != null) {
+        dispute.court = court.id
+        court.disputeCount = court.disputeCount.plus(ONE)
+
+        court.save()
+      }
+    }
+
+    dispute.save()
+
+    // Register dispute in platform summary
+    let summary = getSummaryEntity()
+    summary.disputeCount = summary.disputeCount.plus(ONE)
+
+    summary.save()
+  }
 }
 
 export function handleNewPeriod(event: NewPeriod): void {
