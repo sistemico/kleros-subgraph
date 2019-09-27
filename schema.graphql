@@ -2,8 +2,8 @@
 # Kleros
 #
 
-type Kleros @entity {
-  " Kleros platform version "
+type KlerosSummary @entity {
+  " Kleros platform ID "
   id: ID!
 
   " Total numbers of courts "
