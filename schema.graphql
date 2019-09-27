@@ -17,6 +17,9 @@ type KlerosSummary @entity {
 
   " Total numbers of disputes "
   disputeCount: BigInt!
+
+  " Total amount of tokens staked in all courts "
+  totalStaked: BigDecimal!
 }
 
 type Court @entity {
@@ -52,6 +55,9 @@ type Court @entity {
 
   " List of child courts "
   children: [Court!] @derivedFrom(field: "parent")
+
+  " All token stakes in this court "
+  stakes: [Stake!] @derivedFrom(field: "court")
 }
 
 type Dispute @entity {
@@ -87,6 +93,55 @@ type Dispute @entity {
 
   " Transaction hash at most recent action "
   modifiedAtTransaction: Bytes!
+}
+
+type Juror @entity {
+  " <jurorAddress> "
+  id: ID!
+
+  " Juror's account address "
+  address: Bytes!
+
+  " Juror's total amount of tokens staked in subcourts "
+  stakedTokens: BigDecimal!
+
+  " Juror's total amount of tokens locked in disputes "
+  lockedTokens: BigDecimal
+
+  " Last stake timestamp as seconds "
+  lastStake: BigInt
+
+  " Block number in which last stake was made "
+  lastStakeBlock: BigInt
+
+  " Transaction hash in which last stake was made "
+  lastStakeTransaction: Bytes
+
+  " All token stakes made by this juror "
+  stakes: [Stake!] @derivedFrom(field: "juror")
+}
+
+type Stake @entity {
+  " <courtId>-<jurorAddress>-<timestamp> "
+  id: ID!
+
+  " Subcourt at the end of the stake path "
+  court: Court!
+
+  " Juror account address "
+  juror: Juror!
+
+  " Amount of token staked "
+  amount: BigDecimal!
+
+  " Creation timestamp as seconds "
+  timestamp: BigInt!
+
+  " Block number in which the stake was set "
+  block: BigInt!
+
+  " Transaction hash in which the stake was set "
+  transaction: Bytes!
 }
 
 " Dispute period "
