@@ -6,6 +6,12 @@ type KlerosSummary @entity {
   " Kleros platform ID "
   id: ID!
 
+  " Current phase "
+  currentPhase: Phase
+
+  " The last time the phase was change "
+  lastPhaseChange: BigInt
+
   " Total numbers of courts "
   courtCount: BigInt!
 
@@ -99,6 +105,17 @@ enum Period {
 
   " Tokens are redistributed and the ruling is executed "
   EXECUTION
+}
+
+enum Phase {
+  " Stake sum trees can be updated. Pass after `minStakingTime` passes and there is at least one dispute without jurors. "
+  STAKING
+
+  " Waiting for a random number. Pass as soon as it is ready. "
+  GENERATING
+
+  " Jurors can be drawn. Pass after all disputes have jurors or `maxDrawingTime` passes. "
+  DRAWING
 }
 
 #
