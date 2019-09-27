@@ -58,3 +58,24 @@ dataSources:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handlePinakionTransfer
+  - name: PolicyRegistry
+    kind: ethereum/contract
+    network: mainnet
+    source:
+      abi: PolicyRegistry
+      address: '0x03a9458d77dd705829fa758c64dbe770385295cc'
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      file: ./src/mapping/index.ts
+      language: wasm/assemblyscript
+      entities:
+        - Court
+      abis:
+        - name: PolicyRegistry
+          file: ./abis/PolicyRegistry.json
+        - name: KlerosLiquid
+          file: ./abis/KlerosLiquid.json
+      eventHandlers:
+        - event: PolicyUpdate(indexed uint256,string)
+          handler: handlerPolicyUpdate

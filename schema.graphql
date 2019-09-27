@@ -41,6 +41,9 @@ type Court @entity {
   " Total numbers of disputes on this court "
   disputeCount: BigInt!
 
+  " URI of the court policy "
+  policy: String
+
   " List of child courts "
   children: [Court!] @derivedFrom(field: "parent")
 }

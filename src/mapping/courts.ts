@@ -1,10 +1,22 @@
 import { BigInt } from '@graphprotocol/graph-ts'
 
+import { PolicyUpdate } from '../../generated/PolicyRegistry/PolicyRegistry'
+
 import { Court } from '../../generated/schema'
 
 import { getKlerosContract, getSummaryEntity } from './core'
 import { ONE } from './utils'
 import { toDecimal } from './token'
+
+export function handlerPolicyUpdate(event: PolicyUpdate): void {
+  let court = getOrRegisterCourt(event.params._subcourtID)
+
+  if (court) {
+    court.policy = event.params._policy
+
+    court.save()
+  }
+}
 
 export function getOrRegisterCourt(courtId: BigInt): Court {
   let court = Court.load(courtId.toString())

@@ -1,4 +1,8 @@
 export {
+  handlerPolicyUpdate,
+} from './courts'
+
+export {
   handleDisputeCreation,
   handleNewPeriod,
   handleAppealPossible,
