@@ -1,23 +1,41 @@
 import { Draw, StakeSet, TokenAndETHShift } from '../../generated/Kleros/KlerosLiquid'
 
-import { Juror, Stake } from '../../generated/schema'
+import { Dispute, Juror, Stake, Vote } from '../../generated/schema'
 
 import { getSummaryEntity } from './core'
 import { getOrRegisterCourt } from './courts'
 import { toDecimal } from './token'
+import { ONE } from './utils'
 
 export function handleDraw(event: Draw): void {
-  /*
   let disputeId = event.params._disputeID.toString()
   let jurorAddress = event.params._address.toHexString()
-  let roundIndex = event.params._appeal.toString()
+  let round = event.params._appeal.toString()
   let voteId = event.params._voteID.toString()
 
-  let juror = new Juror(jurorAddress)
-  juror.address = event.params._address
+  let dispute = Dispute.load(disputeId)
+  let juror = Juror.load(jurorAddress)
 
-  juror.save()
-  */
+  if (dispute != null && juror != null) {
+    let vote = new Vote(disputeId + '-' + round + '-' + voteId)
+    vote.dispute = dispute.id
+    vote.juror = juror.id
+    vote.round = event.params._appeal
+    vote.voteId = event.params._voteID
+
+    vote.created = event.block.timestamp
+    vote.createdAtBlock = event.block.number
+    vote.createdAtTransaction = event.transaction.hash
+
+    dispute.voteCount = dispute.voteCount.plus(ONE)
+
+    let summary = getSummaryEntity()
+    summary.voteCount = summary.voteCount.plus(ONE)
+
+    dispute.save()
+    vote.save()
+    summary.save()
+  }
 }
 
 export function handleStakeSet(event: StakeSet): void {

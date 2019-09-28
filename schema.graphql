@@ -18,6 +18,9 @@ type KlerosSummary @entity {
   " Total numbers of disputes "
   disputeCount: BigInt!
 
+  " Total numbers of votes "
+  voteCount: BigInt!
+
   " Total amount of tokens staked in all courts "
   totalStaked: BigDecimal!
 }
@@ -56,6 +59,9 @@ type Court @entity {
   " List of child courts "
   children: [Court!] @derivedFrom(field: "parent")
 
+  "All disputes in this court "
+  disputes: [Dispute!] @derivedFrom(field: "court")
+
   " All token stakes in this court "
   stakes: [Stake!] @derivedFrom(field: "court")
 }
@@ -76,6 +82,9 @@ type Dispute @entity {
   " Address of the dispute's owner "
   owner: Bytes!
 
+  " Total numbers of votes of this dispute "
+  voteCount: BigInt!
+
   " Creation timestamp as seconds "
   created: BigInt!
 
@@ -85,6 +94,9 @@ type Dispute @entity {
   " Transaction hash in which the dispute was created "
   createdAtTransaction: Bytes!
 
+  " The last time the period was changed "
+  lastPeriodChange: BigInt
+
   " Timestamp as seconds of most recent action "
   modified: BigInt!
 
@@ -93,6 +105,9 @@ type Dispute @entity {
 
   " Transaction hash at most recent action "
   modifiedAtTransaction: Bytes!
+
+  " Dispute votes "
+  votes: [Vote!] @derivedFrom(field: "dispute")
 }
 
 type Juror @entity {
@@ -119,6 +134,9 @@ type Juror @entity {
 
   " All token stakes made by this juror "
   stakes: [Stake!] @derivedFrom(field: "juror")
+
+  " Juror votes "
+  votes: [Vote!] @derivedFrom(field: "juror")
 }
 
 type Stake @entity {
@@ -142,6 +160,32 @@ type Stake @entity {
 
   " Transaction hash in which the stake was set "
   transaction: Bytes!
+}
+
+type Vote @entity {
+  " <disputeId>-<round>-<voteId> "
+  id: ID!
+
+  " Dispute ID "
+  dispute: Dispute!
+
+  " Juror address "
+  juror: Juror!
+
+  " Round index "
+  round: BigInt!
+
+  " Vote ID "
+  voteId: BigInt!
+
+  " Creation timestamp as seconds "
+  created: BigInt!
+
+  " Block number in which the vote was created "
+  createdAtBlock: BigInt!
+
+  " Transaction hash in which the vote was created "
+  createdAtTransaction: Bytes!
 }
 
 " Dispute period "

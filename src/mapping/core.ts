@@ -23,6 +23,7 @@ export function getSummaryEntity(): KlerosSummary {
     summary = new KlerosSummary(KLEROS_SUMMARY_ID)
     summary.courtCount = ZERO
     summary.disputeCount = ZERO
+    summary.voteCount = ZERO
     summary.totalStaked = ZERO.toBigDecimal()
   }
 
