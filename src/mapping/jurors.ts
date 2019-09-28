@@ -1,11 +1,11 @@
 import { Draw, StakeSet, TokenAndETHShift } from '../../generated/Kleros/KlerosLiquid'
 
-import { Dispute, Juror, Stake, Vote } from '../../generated/schema'
+import { Dispute, Juror, Reward, Stake, Vote } from '../../generated/schema'
 
 import { getSummaryEntity } from './core'
 import { getOrRegisterCourt } from './courts'
 import { toDecimal } from './token'
-import { ONE } from './utils'
+import { ONE, uid, ZERO_DECIMAL } from './utils'
 
 export function handleDraw(event: Draw): void {
   let disputeId = event.params._disputeID.toString()
@@ -49,7 +49,7 @@ export function handleStakeSet(event: StakeSet): void {
   juror.lastStakeBlock = event.block.number
   juror.lastStakeTransaction = event.transaction.hash
 
-  let stake = new Stake(court.id + '-' + juror.id + '-' + event.block.timestamp.toString())
+  let stake = new Stake(court.id + '-' + juror.id + '-' + uid(event))
   stake.court = court.id
   stake.juror = juror.id
   stake.amount = toDecimal(event.params._stake)
@@ -61,12 +61,39 @@ export function handleStakeSet(event: StakeSet): void {
   let summary = getSummaryEntity()
   summary.totalStaked = summary.totalStaked.plus(stake.amount)
 
-  // Persist all entities
   juror.save()
   stake.save()
   summary.save()
 }
 
 export function handleTokenAndETHShift(event: TokenAndETHShift): void {
-  // TODO
+  let disputeId = event.params._disputeID.toString()
+  let jurorAddress = event.params._address.toHexString()
+
+  let reward = new Reward(disputeId + '-' + jurorAddress + '-' + uid(event))
+  reward.dispute = disputeId
+  reward.juror = jurorAddress
+  reward.ethAmount = toDecimal(event.params._ETHAmount)
+  reward.tokenAmount = toDecimal(event.params._tokenAmount)
+
+  reward.timestamp = event.block.timestamp
+  reward.block = event.block.number
+  reward.transaction = event.transaction.hash
+
+  let summary = getSummaryEntity()
+
+  if (reward.ethAmount > ZERO_DECIMAL) {
+    summary.totalEthRewarded = summary.totalEthRewarded.plus(reward.ethAmount)
+  } else if (reward.ethAmount < ZERO_DECIMAL) {
+    summary.totalEthPunished = summary.totalEthPunished.plus(reward.ethAmount)
+  }
+
+  if (reward.tokenAmount > ZERO_DECIMAL) {
+    summary.totalTokenRewarded = summary.totalTokenRewarded.plus(reward.tokenAmount)
+  } else if (reward.tokenAmount < ZERO_DECIMAL) {
+    summary.totalTokenPunished = summary.totalTokenPunished.plus(reward.tokenAmount)
+  }
+
+  reward.save()
+  summary.save()
 }

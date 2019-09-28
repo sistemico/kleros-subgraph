@@ -4,7 +4,7 @@ import { KlerosLiquid } from '../../generated/Kleros/KlerosLiquid'
 
 import { KlerosSummary } from '../../generated/schema'
 
-import { ZERO } from './utils'
+import { ZERO, ZERO_DECIMAL } from './utils'
 
 // Contracts
 const KLEROS_LIQUID_ADDRESS = '0x988b3a538b618c7a603e1c11ab82cd16dbe28069'
@@ -24,7 +24,11 @@ export function getSummaryEntity(): KlerosSummary {
     summary.courtCount = ZERO
     summary.disputeCount = ZERO
     summary.voteCount = ZERO
-    summary.totalStaked = ZERO.toBigDecimal()
+    summary.totalStaked = ZERO_DECIMAL
+    summary.totalEthPunished = ZERO_DECIMAL
+    summary.totalEthRewarded = ZERO_DECIMAL
+    summary.totalTokenPunished = ZERO_DECIMAL
+    summary.totalTokenRewarded = ZERO_DECIMAL
   }
 
   return summary as KlerosSummary

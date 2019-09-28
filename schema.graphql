@@ -23,6 +23,18 @@ type KlerosSummary @entity {
 
   " Total amount of tokens staked in all courts "
   totalStaked: BigDecimal!
+
+  " Total amount of ETH punished to jurors "
+  totalEthPunished: BigDecimal!
+
+  " Total amount of ETH rewarded to jurors "
+  totalEthRewarded: BigDecimal!
+
+  " Total amount of tokens punished to jurors "
+  totalTokenPunished: BigDecimal!
+
+  " Total amount of tokens rewarded to jurors "
+  totalTokenRewarded: BigDecimal!
 }
 
 type Court @entity {
@@ -140,7 +152,7 @@ type Juror @entity {
 }
 
 type Stake @entity {
-  " <courtId>-<jurorAddress>-<timestamp> "
+  " <courtId>-<jurorAddress>-<transactionHash>-<logIndex> "
   id: ID!
 
   " Subcourt at the end of the stake path "
@@ -152,7 +164,7 @@ type Stake @entity {
   " Amount of token staked "
   amount: BigDecimal!
 
-  " Creation timestamp as seconds "
+  " Stake timestamp as seconds "
   timestamp: BigInt!
 
   " Block number in which the stake was set "
@@ -186,6 +198,32 @@ type Vote @entity {
 
   " Transaction hash in which the vote was created "
   createdAtTransaction: Bytes!
+}
+
+type Reward @entity {
+  " <disputeId>-<jurorAddress>-<transactionHash>-<logIndex> "
+  id: ID!
+
+  " Dispute ID "
+  dispute: Dispute!
+
+  " Juror address "
+  juror: Juror!
+
+  " The amount of ETH a juror won (if positive) or lost (if negative) "
+  ethAmount: BigDecimal!
+
+  " The amount of tokens a juror won (if positive) or lost (if negative) "
+  tokenAmount: BigDecimal!
+
+  " Reward timestamp as seconds "
+  timestamp: BigInt!
+
+  " Block number in which the reward was shifted "
+  block: BigInt!
+
+  " Transaction hash in which the reward was shifted "
+  transaction: Bytes!
 }
 
 " Dispute period "
