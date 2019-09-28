@@ -1,5 +1,12 @@
 import { BigInt } from '@graphprotocol/graph-ts'
 
+import {
+  ChangeSubcourtAlphaCall,
+  ChangeSubcourtJurorFeeCall,
+  ChangeSubcourtJurorsForJumpCall,
+  ChangeSubcourtMinStakeCall,
+} from '../../generated/Kleros/KlerosLiquid'
+
 import { PolicyUpdate } from '../../generated/PolicyRegistry/PolicyRegistry'
 
 import { Court } from '../../generated/schema'
@@ -7,6 +14,46 @@ import { Court } from '../../generated/schema'
 import { getKlerosContract, getSummaryEntity } from './core'
 import { ONE } from './utils'
 import { toDecimal } from './token'
+
+export function handleChangeAlpha(call: ChangeSubcourtAlphaCall): void {
+  let court = Court.load(call.inputs._subcourtID.toString())
+
+  if (court != null) {
+    court.alpha = call.inputs._alpha
+
+    court.save()
+  }
+}
+
+export function handleChangeJurorFee(call: ChangeSubcourtJurorFeeCall): void {
+  let court = Court.load(call.inputs._subcourtID.toString())
+
+  if (court != null) {
+    court.feeForJuror = toDecimal(call.inputs._feeForJuror)
+
+    court.save()
+  }
+}
+
+export function handleChangeJurorsForJump(call: ChangeSubcourtJurorsForJumpCall): void {
+  let court = Court.load(call.inputs._subcourtID.toString())
+
+  if (court != null) {
+    court.jurorsForCourtJump = toDecimal(call.inputs._jurorsForCourtJump)
+
+    court.save()
+  }
+}
+
+export function handleChangeMinStake(call: ChangeSubcourtMinStakeCall): void {
+  let court = Court.load(call.inputs._subcourtID.toString())
+
+  if (court != null) {
+    court.minStake = toDecimal(call.inputs._minStake)
+
+    court.save()
+  }
+}
 
 export function handlerPolicyUpdate(event: PolicyUpdate): void {
   let court = getOrRegisterCourt(event.params._subcourtID)

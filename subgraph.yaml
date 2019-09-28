@@ -39,6 +39,15 @@ dataSources:
           handler: handleStakeSet
         - event: TokenAndETHShift(indexed address,indexed uint256,int256,int256)
           handler: handleTokenAndETHShift
+      callHandlers:
+        - function: changeSubcourtAlpha(uint96,uint256)
+          handler: handleChangeAlpha
+        - function: changeSubcourtJurorFee(uint96,uint256)
+          handler: handleChangeJurorFee
+        - function: changeSubcourtJurorsForJump(uint96,uint256)
+          handler: handleChangeJurorsForJump
+        - function: changeSubcourtMinStake(uint96,uint256)
+          handler: handleChangeMinStake
   - name: Pinakion
     kind: ethereum/contract
     network: mainnet
