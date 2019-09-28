@@ -1,4 +1,8 @@
 export {
+  handleChangeAlpha,
+  handleChangeJurorFee,
+  handleChangeJurorsForJump,
+  handleChangeMinStake,
   handlerPolicyUpdate,
 } from './courts'
 
