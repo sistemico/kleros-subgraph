@@ -12,7 +12,7 @@ dataSources:
       address: '0x988b3a538b618c7a603e1c11ab82cd16dbe28069'
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.3
+      apiVersion: 0.0.4
       file: ./src/mapping/index.ts
       language: wasm/assemblyscript
       entities:
@@ -56,7 +56,7 @@ dataSources:
       address: '0x93ed3fbe21207ec2e8f2d3c3de6e058cb73bc04d'
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.3
+      apiVersion: 0.0.4
       file: ./src/mapping/token.ts
       language: wasm/assemblyscript
       entities:
@@ -75,7 +75,7 @@ dataSources:
       address: '0x03a9458d77dd705829fa758c64dbe770385295cc'
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.3
+      apiVersion: 0.0.4
       file: ./src/mapping/index.ts
       language: wasm/assemblyscript
       entities:

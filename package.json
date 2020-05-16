@@ -11,7 +11,7 @@
     "remove-local": "graph remove --node http://localhost:8020/ sistemico/kleros"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "0.15.0",
-    "@graphprotocol/graph-ts": "0.15.1"
+    "@graphprotocol/graph-cli": "0.18.0",
+    "@graphprotocol/graph-ts": "0.18.1"
   }
 }
