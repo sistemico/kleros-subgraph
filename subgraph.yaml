@@ -10,6 +10,7 @@ dataSources:
     source:
       abi: KlerosLiquid
       address: '0x988b3a538b618c7a603e1c11ab82cd16dbe28069'
+      startBlock: 7303699
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -54,6 +55,7 @@ dataSources:
     source:
       abi: Pinakion
       address: '0x93ed3fbe21207ec2e8f2d3c3de6e058cb73bc04d'
+      startBlock: 5257012
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -73,6 +75,7 @@ dataSources:
     source:
       abi: PolicyRegistry
       address: '0x03a9458d77dd705829fa758c64dbe770385295cc'
+      startBlock: 7305452
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
